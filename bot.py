@@ -7,15 +7,14 @@ from dotenv import load_dotenv
 from datetime import datetime
 from bs4 import BeautifulSoup
 
-# Load env variables
 load_dotenv()
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 CHANNEL_ID = int(os.getenv('CHANNEL_ID'))
 
-# Bot setup with intents
+# Bot setup
 intents = discord.Intents.default()
 intents.message_content = True
-intents.guilds = True  # Add this line
+intents.guilds = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 from pymongo import MongoClient
@@ -32,6 +31,8 @@ class OpportunityDatabase:
             ("title", 1),
             ("location", 1),
             ("date_posted", 1),
+            ("terms", 1),
+            ("sponsorship", 1)
         ], unique=True)
     
     def add_opportunity(self, opp):
@@ -86,7 +87,7 @@ def fetch_github_opportunities(repo_url, test_date=None):
             for row in rows:
                 cols = row.find_all('td')
                 
-                # valid table
+                # Valid repo table
                 if len(cols) >= 5:
 
                     if repo_url == offseason_repo:
@@ -154,7 +155,8 @@ def fetch_github_opportunities(repo_url, test_date=None):
         print(f"Error fetching GitHub opportunities: {e}")
         return []
 
-
+'''
+FUTURE FEATURE
 def fetch_linkedin_opportunities():
     """Fetch internships from LinkedIn using web scraping"""
     try:
@@ -187,7 +189,7 @@ def fetch_linkedin_opportunities():
     except Exception as e:
         print(f"Error fetching LinkedIn opportunities: {e}")
         return []
-
+'''
 
 def fetch_opportunities(test_date=None):
     db = OpportunityDatabase()
