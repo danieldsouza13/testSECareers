@@ -69,9 +69,13 @@ def fetch_github_opportunities(repo_url, test_date=None):
         opportunities = []
         tables = soup.find_all('table')
         current_company = ""
+
+        current_date = datetime.now()
+        target_year = current_date.year
         
         if test_date:
             target_date = datetime.strptime(test_date, "%B %d, %Y").strftime("%b %d")
+            target_year = datetime.strptime(test_date, "%B %d, %Y").year
         else:
             target_date = datetime.now().strftime("%b %d")
             
@@ -123,8 +127,8 @@ def fetch_github_opportunities(repo_url, test_date=None):
                         current_company = company
                     
                     if date_posted == target_date:
-                        # Convert date to full format for storage
-                        full_date = datetime.strptime(date_posted + " 2024", "%b %d %Y").strftime("%B %d, %Y")
+
+                        full_date = datetime.strptime(f"{date_posted} {target_year}", "%b %d %Y").strftime("%B %d, %Y")
 
                         location_cell = cols[2]
                         locations = []
@@ -194,8 +198,8 @@ def fetch_opportunities(test_date=None):
     newgrad_repo = "https://github.com/SimplifyJobs/New-Grad-Positions"
 
     new_opportunities = (
-        fetch_github_opportunities(main_repo, test_date) + 
         fetch_github_opportunities(offseason_repo, test_date) +
+        fetch_github_opportunities(main_repo, test_date) +
         fetch_github_opportunities(newgrad_repo, test_date)
     )
     
@@ -207,28 +211,6 @@ def fetch_opportunities(test_date=None):
     
     return opportunities
    
-    '''
-    # Mock data
-    return [
-        {
-            "title": "Software Engineering Intern",
-            "company": "TechCorp",
-            "location": "Remote",
-            "description": "Join our team for a summer internship!",
-            "deadline": "2025-03-01",
-            "link": "https://example.com/job1"
-        },
-        {
-            "title": "Data Science Intern",
-            "company": "DataInc",
-            "location": "New York, NY",
-            "description": "Apply your ML skills in a real-world setting.",
-            "deadline": "2025-02-15",
-            "link": "https://example.com/job2"
-        }
-    ]
-    '''
-
 def create_opportunity_embed(opp):
     """Create a Discord message embedding for an opportunity"""
     embed = discord.Embed(color=discord.Color.blue())
@@ -246,14 +228,24 @@ def create_opportunity_embed(opp):
     
     # Locations
     embed.add_field(name="📍 Location(s)", value=opp['location'], inline=False)
+
+    # Applicant Years
+    if "New Grad" in opp['terms']:
+        eligible_years = "Senior, Grad Student"
+    else:
+        eligible_years = "Freshman, Sophomore, Junior"
     
+    embed.add_field(name="🎓 Year(s)", value=eligible_years, inline=False)
+        
     # Terms
-    embed.add_field(name="🗓 Term(s)", value=opp['terms'], inline=False)
+    embed.add_field(name="⏰ Term(s)", value=opp['terms'], inline=False)
     
     # Sponsorship
-    embed.add_field(name="🌐 Sponsorship", value=opp['sponsorship'], inline=False)
+    embed.add_field(name="🌍 Sponsorship", value=opp['sponsorship'], inline=False)
 
-    # Applicant Year
+    # Time Posted
+    time_posted = f"{opp['date_posted']} at {datetime.now().strftime('%I:%M %p ET')}"
+    embed.add_field(name="🧾 Listed", value=time_posted, inline=False)    
     
     return embed
 
