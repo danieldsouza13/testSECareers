@@ -3,12 +3,11 @@ import requests
 from bs4 import BeautifulSoup
 from database import OpportunityDatabase
 
-
 main_repo = "https://github.com/SimplifyJobs/Summer2025-Internships"
 offseason_repo = "https://github.com/SimplifyJobs/Summer2025-Internships/blob/dev/README-Off-Season.md"
 newgrad_repo = "https://github.com/SimplifyJobs/New-Grad-Positions"
 
-def fetch_github_opportunities(repo_url, test_date=None):
+def fetch_github_opportunities(repo_url, test_date="January 1, 2025"):
     try:
         response = requests.get(repo_url)
         response.raise_for_status()
