@@ -22,9 +22,14 @@ from datetime import datetime
 
 class OpportunityDatabase:
     def __init__(self):
-        self.client = MongoClient('mongodb://localhost:27017/')
-        self.db = self.client['internships_db']
-        self.opportunities = self.db['opportunities']
+        self.client = MongoClient(
+            os.getenv('MONGODB_URI'),
+            serverSelectionTimeoutMS=5000,
+            retryWrites=True,
+            maxPoolSize=50
+        )
+        self.db = self.client['SECareers']
+        self.opportunities = self.db['Opportunity Listings']
         
         self.opportunities.create_index([
             ("company", 1),
