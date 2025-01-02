@@ -8,7 +8,7 @@ def scrape_and_store():
     try:
         client = MongoClient(os.environ['MONGODB_URI'])
         db = client['SECareers']
-        opportunities = db['Opportunity Postings']
+        opportunities = db['Opportunity Listings']
         
         new_opportunities = fetch_opportunities()
         
