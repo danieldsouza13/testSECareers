@@ -13,7 +13,7 @@ def scrape_and_store():
         new_opportunities = fetch_opportunities()
         
         for opp in new_opportunities:
-            if not OpportunityDatabase.opportunity_exists(opportunities, opp):
+            if not OpportunityDatabase().opportunity_exists(opportunities, opp):
                 opp['timestamp'] = datetime.now()
                 opportunities.insert_one(opp)
                 
