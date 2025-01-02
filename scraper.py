@@ -100,8 +100,8 @@ def scrape_and_store():
         db = OpportunityDatabase()
         
         new_opportunities = (
-            fetch_github_opportunities(main_repo) +
             fetch_github_opportunities(offseason_repo) +
+            fetch_github_opportunities(main_repo) +
             fetch_github_opportunities(newgrad_repo)
         )
         
