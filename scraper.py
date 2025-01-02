@@ -1,13 +1,12 @@
 from pymongo import MongoClient
 import os
-from dotenv import load_dotenv
 from datetime import datetime
 from bot import OpportunityDatabase
 from bot import fetch_opportunities
 
 def scrape_and_store():
     try:
-        client = MongoClient(os.getenv('MONGODB_URI'))
+        client = MongoClient(os.environ['MONGODB_URI'])
         db = client['SECareers']
         opportunities = db['Opportunity Postings']
         
@@ -22,5 +21,4 @@ def scrape_and_store():
         print(f"Error in scraper: {e}")
 
 if __name__ == "__main__":
-    load_dotenv()
     scrape_and_store()
